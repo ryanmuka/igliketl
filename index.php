@@ -1,11 +1,10 @@
-﻿<?php
+<?php
 set_time_limit(0);
 include 'download.php';
 clear();
 echo "
- *  INSTAGRAM FEED LIKER
- *  RECODE #CJDW Team
- 
+ *  INSTAGRAM LIKE TIMELINE
+ *  ReCode CJDW Team
   
     •••••••••••••••••••••••••••••••••••••••••
     
@@ -27,57 +26,42 @@ if ($login['status'] == 'success') {
         'csrftoken' => $login['csrftoken'],
         'sessionid' => $login['sessionid']
     );
-
     $slee = getComment('[?]  Sleep in Seconds ( RECOMMENDED 100 ) : ');
-  
-    while (true) {
-
-        if (n8off() == true):
-       $sleep = $slee + rand(0,10);
+    for($i=0;$i<100;$i++):
         $profile    = getHome($data_login);
         $data_array = json_decode($profile);
         $result     = $data_array->user->edge_web_feed_timeline;
+        $jumlah = count($result->edges);
+        $hitung = 1;
+        echo '[+] Total Postingan '.$jumlah.' '. PHP_EOL;
         foreach ($result->edges as $items) {
             $id       = $items->node->id;
             $username = $items->node->owner->username;
-            $like     = like($id, $data_login);
-            if ($like['status'] == 'error') {
-                echo '[+] Username: ' . $username . ' | Media_id: ' . $id . ' | Error Like' . PHP_EOL;
-                logout($data_login);
-                $login = login($username, $password);
-                if ($login['status'] == 'success') {
-                    echo '[*] Login as ' . $login['username'] . ' Success!' . PHP_EOL;
-                    $data_login = array(
-                        'username' => $login['username'],
-                        'csrftoken' => $login['csrftoken'],
-                        'sessionid' => $login['sessionid']
-                    );
-                }else{
-
-                    die("Something went wrong");
-
+            if(!$items->node->viewer_has_liked):
+                $like     = like($id, $data_login);
+                if ($like['status'] == 'error') {
+                    echo '[+] Username: ' . $username . ' | Media_id: ' . $id . ' | Error Like' . PHP_EOL;
+                    logout($data_login);
+                    $login = login($username, $password);
+                    if ($login['status'] == 'success') {
+                        echo '[*] Login as ' . $login['username'] . ' Success!' . PHP_EOL;
+                        $data_login = array(
+                            'username' => $login['username'],
+                            'csrftoken' => $login['csrftoken'],
+                            'sessionid' => $login['sessionid']
+                        );
+                    }else{
+                        die("Something went wrong");
+                    }
+                } else {
+                    echo '['.$hitung.'] Username: ' . $username . ' | Media_id: ' . $id . ' | Like Success' . PHP_EOL;
                 }
-            } else {
-                echo '[+] Username: ' . $username . ' | Media_id: ' . $id . ' | Like Success' . PHP_EOL;
-            }
-            break;
+                $hitung = $hitung+1;
+            endif;
+            sleep(5);
         }
-        echo '[+] [' . date("H:i:s") . '] Sleep for ' . $sleep . ' seconds [+]' . PHP_EOL;
-        sleep( $sleep);
-        echo '•••••••••••••••••••••••••••••••••••••••••' . PHP_EOL . PHP_EOL;
-        else:
-
-            echo "Next Run time is 11 AM".PHP_EOL.PHP_EOL;
-
-        sleep(rand(100,600));
-
-        endif;
-
-    }
-
-
-
-
-} else
-
+        sleep($slee);
+    endfor;
+}else{
     echo json_encode($login);
+}
