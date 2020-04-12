@@ -26,8 +26,8 @@ if ($login['status'] == 'success') {
         'csrftoken' => $login['csrftoken'],
         'sessionid' => $login['sessionid']
     );
-    $slee = getComment('[?]  Sleep in Seconds ( RECOMMENDED 100 ) : ');
-    for($i=0;$i<100;$i++):
+    $slee = getComment('[?]  Sleep in Seconds ( RECOMMENDED 4320 ) : ');
+    for($i=0;$i<4320;$i++):
         $profile    = getHome($data_login);
         $data_array = json_decode($profile);
         $result     = $data_array->user->edge_web_feed_timeline;
@@ -58,7 +58,7 @@ if ($login['status'] == 'success') {
                 }
                 $hitung = $hitung+1;
             endif;
-            sleep(5);
+            sleep(360);
         }
         sleep($slee);
     endfor;
