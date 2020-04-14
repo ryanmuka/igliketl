@@ -58,7 +58,7 @@ if ($login['status'] == 'success') {
                 }
                 $hitung = $hitung+1;
             endif;
-            sleep(120);
+            sleep(240);
         }
         sleep($slee);
     endfor;
